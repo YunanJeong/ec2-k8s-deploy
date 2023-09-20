@@ -2,7 +2,7 @@
 # Set Up Security Groups
 ######################################################################
 resource "aws_security_group" "allows_basic"{
-  name = "allows_basic_multi_ubuntu"
+  name = "allows_basic_${var.tags.Service}"
   ingress{
     description = "allows all inbounds from my workspace"
     protocol  = "-1"
@@ -43,7 +43,7 @@ resource "aws_instance" "server" {
 ######################################################################
 # 인스턴스 간 보안그룹 생성
 resource "aws_security_group" "allows_mutual"{
-    name = "yunan_server_mutual"
+    name = "allows_mutual_${var.tags.Service}"
     ingress{
         from_port   = 0
         to_port     = 0
@@ -86,8 +86,7 @@ resource "null_resource" "server_remote"{
   provisioner "remote-exec" {
     inline = [
       "cloud-init status --wait", # cloud-init이 끝날 떄 까지 기다린다. 에러 예방 차원에서 항상 써준다.
-      "mkdir instance-creation-success",
-      "sudo apt update",
+      "mkdir terraform-done",
     ]
   }
 }

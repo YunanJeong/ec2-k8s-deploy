@@ -1,10 +1,22 @@
-# aws-kfk-test
+# ec2-k8s-deploy
 
-aws-kfk-test
+## Requirement
+
+terraform, awscli
+
+## tree
+
+.
+├── README.md
+├── modules/
+├── init/
+├── main.tf
+├── params.tf
+├── config.tfvars
+└── config.tfvars.example
+
 
 ## 커맨드
-
-- 해당경로에서,
 
 ```sh
 # 초기화: 필요한 provider 다운로드 및 새 module 인식

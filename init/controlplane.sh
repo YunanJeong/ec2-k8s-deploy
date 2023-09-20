@@ -1,7 +1,7 @@
 # K3s controlplane
 curl -sfL https://get.k3s.io | sh -s - --docker
 
-# K3s kubeconfig
+# K3s kubeconfig 및 bashrc
 sudo chmod -R 644 /etc/rancher/k3s/k3s.yaml
 echo 'export KUBECONFIG=/etc/rancher/k3s/k3s.yaml' >> ~/.bashrc
 echo 'alias k="kubectl"' >> ~/.bashrc

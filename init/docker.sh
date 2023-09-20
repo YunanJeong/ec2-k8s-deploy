@@ -1,9 +1,6 @@
-# Delete Legacy
-for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do sudo apt-get remove $pkg; done
-
 # Install
 # https://docs.docker.com/engine/install/ubuntu/
-sudo apt-get update -y
+sudo apt-get update
 sudo apt-get install -y \
     ca-certificates \
     curl \
@@ -16,13 +13,11 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o 
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-sudo apt-get update -y
-
+sudo apt-get update
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 # Non-root settings
 # https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
-sudo groupadd docker
+# sudo groupadd docker
 sudo usermod -aG docker $USER
-newgrp docker
+# newgrp docker

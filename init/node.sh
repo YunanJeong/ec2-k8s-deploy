@@ -2,9 +2,10 @@
 
 
 
-# K3s kubeconfig
+# K3s kubeconfig 및 bashrc
 sudo chmod -R 644 /etc/rancher/k3s/k3s.yaml
-export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+echo 'export KUBECONFIG=/etc/rancher/k3s/k3s.yaml' >> ~/.bashrc
+source ~/.bashrc
 
 # helm
 curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
