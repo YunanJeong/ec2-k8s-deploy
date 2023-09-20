@@ -4,3 +4,4 @@
 .terraform*
 config*
 !*.example
+*token*

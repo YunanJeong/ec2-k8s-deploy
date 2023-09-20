@@ -1,11 +1,7 @@
-# K3s agent
+# K3s Agent (server url, token은 환경변수로 사전처리)
+curl -sfL https://get.k3s.io | sh -s - --docker
 
-
-
-# K3s kubeconfig 및 bashrc
-sudo chmod -R 644 /etc/rancher/k3s/k3s.yaml
-echo 'export KUBECONFIG=/etc/rancher/k3s/k3s.yaml' >> ~/.bashrc
-source ~/.bashrc
+echo 'alias k="kubectl"' >> ~/.bashrc
 
 # helm
 curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null

@@ -34,6 +34,10 @@ output "public_ip_list" {
   description = "Public IP address of the EC2 instance"
   value       = aws_instance.server[*].public_ip
 }
+output "private_ip_list" {
+  description = "Public IP address of the EC2 instance"
+  value       = aws_instance.server[*].private_ip
+}
 output "mutual_cidr_blocks" {
   description = "public_ip_list 내용에 /32 붙임"
   value       = [

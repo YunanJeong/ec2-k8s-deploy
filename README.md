@@ -2,7 +2,9 @@
 
 ## Requirement
 
-terraform, awscli
+- terraform
+- awscli + 액세스키
+- pem file (AWS계정과 연동된 private key)
 
 ## tree
 
