@@ -50,11 +50,11 @@ resource "aws_security_group" "allows_mutual"{
         description = "node to node"
         protocol    = "-1"
 
-        # 할당된 인스턴스 public ip에 문자열 '/32'를 붙이고 리스트로 반환
-        cidr_blocks = [
-          for ip in aws_instance.server[*].public_ip:
-            replace(ip,ip,"${ip}/32")
-        ]
+        # 할당된 인스턴스 ip에 문자열 '/32'를 붙이고 리스트로 반환
+        cidr_blocks = concat(
+          [ for ip in aws_instance.server[*].public_ip: replace(ip,ip,"${ip}/32") ],
+          [ for ip in aws_instance.server[*].private_ip: replace(ip,ip,"${ip}/32") ]
+        )
     }
 }
 # 인스턴스 간 보안그룹을 각각 인스턴스에 등록
