@@ -36,6 +36,12 @@ resource "aws_instance" "server" {
   security_groups = [
     aws_security_group.allows_basic.name,
   ]
+  
+  root_block_device{
+    volume_size = var.volume_size
+    # delete_on_termination = true  # default
+  }
+  # ebs_block_device {} # 추가 볼륨 or 스냅샷 가져올 때 사용
 }
 
 ######################################################################

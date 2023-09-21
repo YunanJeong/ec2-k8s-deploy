@@ -2,6 +2,7 @@ node_count = 2  # 생성할 인스턴스 개수
 
 ami = "ami-063454de5fe8eba79"  # Ubuntu 22.04 LTS
 instance_type = "t2.micro"
+volume_size = 8  # GiB
 tags = {
     Name = "ddd"
     Owner = "my-mail@gmail.com"

@@ -5,10 +5,12 @@ module "ubuntu" {
     node_count       = var.node_count
     ami              = var.ami
     instance_type    = var.instance_type
+    volume_size      = var.volume_size
     tags             = var.tags
     key_name         = var.key_name
     private_key_path = var.private_key_path
     work_cidr_blocks = var.work_cidr_blocks
+
 }
 
 resource "null_resource" "k3s_server"{

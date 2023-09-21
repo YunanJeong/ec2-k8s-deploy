@@ -6,6 +6,7 @@ variable "tags"{}
 variable "key_name"{}
 variable "private_key_path"{}
 variable "work_cidr_blocks"{}
+variable "volume_size"{}
 
 ## 출력
 output "id" {
