@@ -2,7 +2,7 @@
 
 Building a Kubernetes cluster on AWS EC2
 
-Create a `config.tfvars` file and set the number of nodes, ami, volume, etc. there.
+Create a `config.tfvars` and set the number of nodes, ami, volume, etc. there.
 
 ## Requirement
 
@@ -21,8 +21,8 @@ Create a `config.tfvars` file and set the number of nodes, ami, volume, etc. the
 ├── init/
 ├── main.tf
 ├── params.tf
-├── config.tfvars          # 설정파일 (커밋X)
-└── config.tfvars.example  # 설정파일 샘플
+├── config.tfvars          # Don't Commit
+└── config.tfvars.example  # Sample
 ```
 
 ## 커맨드
