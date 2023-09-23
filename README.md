@@ -6,8 +6,8 @@ Create a `config.tfvars` and set the number of nodes, ami, volume, etc. there.
 
 ## Requirement
 
-- terraform
-- awscli + ACCESS_KEY, SECRET_KEY
+- [Terraform](https://developer.hashicorp.com/terraform/downloads?product_intent=terraform)
+- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) + ACCESS_KEY, SECRET_KEY
 - pem file
   - private key for EC2 access
   - Convert from ppk to pem using tools like PuTTYgen
@@ -17,7 +17,7 @@ Create a `config.tfvars` and set the number of nodes, ami, volume, etc. there.
 ```sh
 .
 ├── README.md
-├── modules/
+├── modules/               # Multiple Ubuntu Module
 ├── init/
 ├── main.tf
 ├── params.tf
