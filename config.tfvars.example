@@ -9,8 +9,8 @@ tags = {
     Service = "servicecode"
 }
 
-key_name = "my-keypair"
-private_key_path = "/home/ubuntu/.ssh/my-keypair.pem"
+key_name = "my-keypair"                                # my-EC2-public-key
+private_key_path = "/home/ubuntu/.ssh/my-keypair.pem"  # my-EC2-private-key (pem)
 work_cidr_blocks = ["0.0.0.0/32", ]
 
 

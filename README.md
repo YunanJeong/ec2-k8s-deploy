@@ -1,22 +1,29 @@
 # ec2-k8s-deploy
 
+Building a Kubernetes cluster on AWS EC2
+
+Create a `config.tfvars` file and set the number of nodes, ami, volume, etc. there.
+
 ## Requirement
 
 - terraform
-- awscli + 액세스키
-- pem file (AWS계정과 연동된 private key)
+- awscli + ACCESS_KEY, SECRET_KEY
+- pem file
+  - private key for EC2 access
+  - Convert from ppk to pem using tools like PuTTYgen
 
 ## tree
 
+```sh
 .
 ├── README.md
 ├── modules/
 ├── init/
 ├── main.tf
 ├── params.tf
-├── config.tfvars
-└── config.tfvars.example
-
+├── config.tfvars          # 설정파일 (커밋X)
+└── config.tfvars.example  # 설정파일 샘플
+```
 
 ## 커맨드
 
