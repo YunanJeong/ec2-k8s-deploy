@@ -16,7 +16,7 @@ module "ubuntu" {
 resource "null_resource" "k3s_server"{
   connection {
     type        = "ssh"
-    host        = module.ubuntu.public_ip_list[var.node_count - 1]
+    host        = module.ubuntu.public_ip_list[0]
     user        = "ubuntu"
     private_key = file(var.private_key_path)
     agent       = false
@@ -37,9 +37,8 @@ resource "null_resource" "k3s_server"{
   provisioner "local-exec" {
     command = <<EOT
       chmod 400 ${var.private_key_path}
-      ssh -o "StrictHostKeyChecking=no" -i ${var.private_key_path} ubuntu@${module.ubuntu.public_ip_list[var.node_count - 1]} 'sudo cat /var/lib/rancher/k3s/server/node-token' > ${path.module}/init/server.token
+      ssh -o "StrictHostKeyChecking=no" -i ${var.private_key_path} ubuntu@${module.ubuntu.public_ip_list[0]} 'sudo cat /var/lib/rancher/k3s/server/node-token' > ${path.module}/init/server.token
     EOT
-    # "sudo chmod 400 ${var.private_key_path} && ssh -i ${var.private_key_path} ubuntu@${module.ubuntu.public_ip_list[var.node_count]} 'sudo cat /var/lib/rancher/k3s/server/node-token' > ${path.module}/init/server.token"
   }
 }
 
@@ -48,7 +47,7 @@ resource "null_resource" "k3s_agents"{
   count = var.node_count - 1 
   connection {
     type        = "ssh"
-    host        = module.ubuntu.public_ip_list[count.index]
+    host        = module.ubuntu.public_ip_list[count.index + 1]  # 0번 인스턴스(controlplane) 제외
     user        = "ubuntu"
     private_key = file(var.private_key_path)
     agent       = false
@@ -63,7 +62,7 @@ resource "null_resource" "k3s_agents"{
       "cloud-init status --wait",
       "sudo chmod +x ~/init/*", 
       "~/init/docker.sh",
-      "export K3S_URL=https://${module.ubuntu.private_ip_list[var.node_count - 1]}:6443",
+      "export K3S_URL=https://${module.ubuntu.private_ip_list[0]}:6443",
       "export K3S_TOKEN=$(cat /home/ubuntu/init/server.token)",
       "~/init/node.sh",
     ]
