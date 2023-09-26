@@ -5,3 +5,4 @@
 config*
 !*.example
 *token*
+k3s.yaml
