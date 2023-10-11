@@ -2,7 +2,7 @@
 # Set Up Security Groups
 ######################################################################
 resource "aws_security_group" "allows_basic"{
-  name = "allows_basic_${var.tags.Service}"
+  name = "allows_basic_${var.tags.Name}"
   ingress{
     description = "allows all inbounds from my workspace"
     protocol  = "-1"
@@ -49,7 +49,7 @@ resource "aws_instance" "server" {
 ######################################################################
 # 인스턴스 간 보안그룹 생성
 resource "aws_security_group" "allows_mutual"{
-    name = "allows_mutual_${var.tags.Service}"
+    name = "allows_mutual_${var.tags.Name}"
     ingress{
         from_port   = 0
         to_port     = 0
