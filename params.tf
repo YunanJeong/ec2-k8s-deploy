@@ -9,8 +9,9 @@ variable "work_cidr_blocks"{}
 variable "volume_size"{}
 
 # 기타 variables
-variable "my_repo_instance_ids"{ default = [] }
-variable "repo_ip" {}
+variable "nexus_ip"            { default = "" }
+variable "nexus_instance_id"   { default = "" }
+variable "gitlab_instance_id"  { default = "" }
 
 ## 출력
 output "id" {

@@ -12,5 +12,8 @@ tags = {
 key_name = "my-keypair"                                # my-EC2-public-key
 private_key_path = "/home/ubuntu/.ssh/my-keypair.pem"  # my-EC2-private-key (pem)
 work_cidr_blocks = ["0.0.0.0/32", ]
-my_repo_instance_ids = []                              # EC2에 Gitlab, Nexus 등이 있으면 추가  # default = []
 
+# EC2에서 실행중인 사설저장소 사용시 등록
+nexus_ip           = "x.x.x.x"
+nexus_instance_id  = "i-xxxxxxxx"
+gitlab_instance_id = "i-xxxxxxxx"
