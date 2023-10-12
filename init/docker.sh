@@ -1,3 +1,6 @@
+# Docker Daemon Settings: insecure-registries 
+sudo mkdir -p /etc/docker && sudo cp ~/init/daemon.json /etc/docker/daemon.json
+
 # Install
 # https://docs.docker.com/engine/install/ubuntu/
 sudo apt-get update

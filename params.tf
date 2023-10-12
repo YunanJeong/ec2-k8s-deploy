@@ -8,6 +8,10 @@ variable "private_key_path"{}
 variable "work_cidr_blocks"{}
 variable "volume_size"{}
 
+# 기타 variables
+variable "my_repo_instance_ids"{ default = [] }
+variable "repo_ip" {}
+
 ## 출력
 output "id" {
   description = "ID of the EC2 instance"
