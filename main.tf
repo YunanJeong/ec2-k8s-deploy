@@ -19,7 +19,6 @@ module "nexus" {
   src_private_key_path = var.private_key_path
   src_tags             = var.tags
   nexus_enabled        = true
-  nexus_ip             = var.nexus_ip
   nexus_instance_id    = var.nexus_instance_id
 }
 
