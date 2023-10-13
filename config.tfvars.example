@@ -13,4 +13,6 @@ key_name = "my-keypair"                                # my-EC2-public-key
 private_key_path = "/home/ubuntu/.ssh/my-keypair.pem"  # my-EC2-private-key (pem)
 work_cidr_blocks = ["0.0.0.0/32", ]
 
-
+# EC2에서 실행중인 사설저장소 사용시 등록
+nexus_instance_id  = "i-xxxxxxxx"
+gitlab_instance_id = "i-xxxxxxxx"

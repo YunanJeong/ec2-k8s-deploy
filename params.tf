@@ -8,6 +8,10 @@ variable "private_key_path"{}
 variable "work_cidr_blocks"{}
 variable "volume_size"{}
 
+# 기타 variables
+variable "nexus_instance_id"   { default = "" }
+variable "gitlab_instance_id"  { default = "" }
+
 ## 출력
 output "id" {
   description = "ID of the EC2 instance"

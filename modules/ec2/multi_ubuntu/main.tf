@@ -36,7 +36,7 @@ resource "aws_instance" "server" {
   security_groups = [
     aws_security_group.allows_basic.name,
   ]
-  
+  ebs_optimized = true  # EBS최적화 (인스턴스와 볼륨 간 I/O속도 개선)  # 인스턴스타입 따라 비활성화될 수 있음
   root_block_device{
     volume_size = var.volume_size
     # delete_on_termination = true  # default

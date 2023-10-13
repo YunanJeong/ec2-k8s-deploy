@@ -1,19 +1,31 @@
 module "ubuntu" {
-    source = "./modules/ec2/multi_ubuntu"
+  source = "./modules/ec2/multi_ubuntu"
 
-    # Module's Variables
-    node_count       = var.node_count
-    ami              = var.ami
-    instance_type    = var.instance_type
-    volume_size      = var.volume_size
-    tags             = var.tags
-    key_name         = var.key_name
-    private_key_path = var.private_key_path
-    work_cidr_blocks = var.work_cidr_blocks
+  # Module's Variables
+  node_count       = var.node_count
+  ami              = var.ami
+  instance_type    = var.instance_type
+  volume_size      = var.volume_size
+  tags             = var.tags
+  key_name         = var.key_name
+  private_key_path = var.private_key_path
+  work_cidr_blocks = var.work_cidr_blocks
 
 }
 
+module "nexus" {
+  source = "./modules/sgroup/allows_repos"
+  src_ips              = module.ubuntu.public_ip_list
+  src_private_key_path = var.private_key_path
+  src_tags             = var.tags
+  nexus_enabled        = true
+  nexus_instance_id    = var.nexus_instance_id
+  gitlab_enabled       = true
+  gitlab_instance_id   = var.gitlab_instance_id
+}
+
 resource "null_resource" "k3s_server"{
+  depends_on = [ module.nexus ]
   connection {
     type        = "ssh"
     host        = module.ubuntu.public_ip_list[0]
@@ -29,7 +41,7 @@ resource "null_resource" "k3s_server"{
   provisioner "remote-exec" {
     inline = [
       "cloud-init status --wait",
-      "sudo chmod +x ~/init/*", 
+      "sudo chmod +x ~/init/*",
       "~/init/docker.sh",
       "~/init/controlplane.sh",
     ]
@@ -45,7 +57,7 @@ resource "null_resource" "k3s_server"{
 }
 
 resource "null_resource" "k3s_agents"{
-  depends_on = [ null_resource.k3s_server ]
+  depends_on = [ module.nexus, null_resource.k3s_server ]
   count = var.node_count - 1 
   connection {
     type        = "ssh"
@@ -62,7 +74,7 @@ resource "null_resource" "k3s_agents"{
   provisioner "remote-exec" {
     inline = [
       "cloud-init status --wait",
-      "sudo chmod +x ~/init/*", 
+      "sudo chmod +x ~/init/*",
       "~/init/docker.sh",
       "export K3S_URL=https://${module.ubuntu.private_ip_list[0]}:6443",
       "export K3S_TOKEN=$(cat /home/ubuntu/init/server.token)",
@@ -71,3 +83,6 @@ resource "null_resource" "k3s_agents"{
     ]
   }
 }
+
+
+
