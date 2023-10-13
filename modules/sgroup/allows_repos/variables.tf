@@ -7,4 +7,9 @@ variable "nexus_enabled"{
   default = true
 }
 variable "nexus_instance_id"  {}
+variable "gitlab_enabled"{
+  type = bool
+  default = true
+}
+variable "gitlab_instance_id"  {}
 

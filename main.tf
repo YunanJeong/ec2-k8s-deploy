@@ -14,12 +14,14 @@ module "ubuntu" {
 }
 
 module "nexus" {
-  source = "./modules/sgroup/allows_nexus"
+  source = "./modules/sgroup/allows_repos"
   src_ips              = module.ubuntu.public_ip_list
   src_private_key_path = var.private_key_path
   src_tags             = var.tags
   nexus_enabled        = true
   nexus_instance_id    = var.nexus_instance_id
+  gitlab_enabled       = true
+  gitlab_instance_id   = var.gitlab_instance_id
 }
 
 resource "null_resource" "k3s_server"{
@@ -81,26 +83,6 @@ resource "null_resource" "k3s_agents"{
     ]
   }
 }
-
-# # EC2로 실행중인 사설 저장소에 보안그룹 추가
-# resource "aws_security_group" "allows_repo"{
-#   name = "allows_repo_from_${var.tags.Name}"
-#   ingress{
-#     from_port   = 80
-#     to_port     = 443
-#     description = "allows_repo"
-#     protocol    = "tcp"
-
-#     # 할당된 인스턴스 ip에 문자열 '/32'를 붙이고 리스트로 반환
-#     cidr_blocks = [ for ip in module.ubuntu.public_ip_list[*]: replace(ip,ip,"${ip}/32") ]
-#   }
-# }
-# module "add_sgroup_to_repo" {
-#   source = "./modules/sgroup/add_sgroup"
-#   # Module's Variables
-#   sgroup_id = aws_security_group.allows_repo.id
-#   instance_id_list = var.my_repo_instance_ids
-# }
 
 
 
