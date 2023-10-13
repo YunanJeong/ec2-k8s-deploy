@@ -9,7 +9,6 @@ variable "work_cidr_blocks"{}
 variable "volume_size"{}
 
 # 기타 variables
-variable "nexus_ip"            { default = "" }
 variable "nexus_instance_id"   { default = "" }
 variable "gitlab_instance_id"  { default = "" }
 

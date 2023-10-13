@@ -3,6 +3,12 @@
 # EC2로 띄워놓은 사설 저장소(NEXUS)에 보안그룹 추가하기
 ######################################################################
 
+# 저장소 인스턴스 정보 가져오기
+data "aws_instance" "nexus" {
+  count       = var.nexus_enabled ? 1 : 0
+  instance_id = var.nexus_instance_id
+}
+
 resource "null_resource" "preset"{
   count = length(var.src_ips)
   connection {
@@ -16,18 +22,18 @@ resource "null_resource" "preset"{
     source = "${path.module}/daemon.json"
     destination = "/home/ubuntu/daemon.json"
   }
-  # 실행된 원격 인스턴스에서 수행할 cli명령어
   provisioner "remote-exec" {
     inline = [
       "cloud-init status --wait",
       "sudo mkdir -p /etc/docker && sudo cp ~/daemon.json /etc/docker/daemon.json",
-      "sudo su -c 'echo ${var.nexus_ip} nexus.wai >> /etc/hosts' ",
-      "sudo su -c 'echo ${var.nexus_ip} docker.wai >> /etc/hosts' ",
-      "sudo su -c 'echo ${var.nexus_ip} private.docker.wai >> /etc/hosts' ",
+      "sudo su -c 'echo ${data.aws_instance.nexus[count.index].public_ip} nexus.wai >> /etc/hosts' ",
+      "sudo su -c 'echo ${data.aws_instance.nexus[count.index].public_ip} docker.wai >> /etc/hosts' ",
+      "sudo su -c 'echo ${data.aws_instance.nexus[count.index].public_ip} private.docker.wai >> /etc/hosts' ",
     ]
   }
 }
 
+# 저장소에 추가할 보안그룹
 resource "aws_security_group" "allows_nexus"{
   name = "allows_from_${var.src_tags.Name}"
   ingress{
@@ -41,10 +47,7 @@ resource "aws_security_group" "allows_nexus"{
   }
 }
 
-data "aws_instance" "nexus" {
-    count       = var.nexus_enabled ? 1 : 0
-    instance_id = var.nexus_instance_id
-}
+# 저장소에 보안그룹 추가하기
 resource "aws_network_interface_sg_attachment" "nexus_attach" {
     count                = var.nexus_enabled ? 1 : 0
     security_group_id    = aws_security_group.allows_nexus.id
