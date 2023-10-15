@@ -17,7 +17,11 @@ Create a `config.tfvars` and set the number of nodes, ami, volume, etc. there.
 ```sh
 .
 ├── README.md
-├── modules/               # Multiple Ubuntu Module
+├── modules/               # Terraform Modules
+│   ├── ec2/
+│   │   └── multi_ubuntu/
+│   └── sgroup/
+│       └── allows_repos/   
 ├── init/
 ├── main.tf
 ├── params.tf
