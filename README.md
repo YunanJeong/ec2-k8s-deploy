@@ -53,8 +53,8 @@ terraform output
 
 ## Reference
 
-- terraform 실행 후 생성된 tfstate파일을 삭제하면, terraform 클라이언트의 제어없이 인스턴스를 독립적으로 유지할 수 있다.
-- RBN DNS 호스트 이름 IPv4 응답(Answer RBN DNS hostname IPv4) 옵션 활성화 방법
+- terraform 실행 후 생성된 `*.tfstate`파일을 삭제하면, terraform 클라이언트의 제어없이 인스턴스를 독립적으로 유지할 수 있다.
+- 인스턴스 상세정보에서, `RBN DNS 호스트 이름 IPv4 응답(Answer RBN DNS hostname IPv4)` 옵션 활성화 방법
   - AWS 콘솔에서 인스턴스 실행시 Default로 활성화되어 있으나, `ec2-k8s-deploy`로 terraform 실행시 비활성화된 경우가 있다.
   - [문서](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-naming.html)를 참고하여 활성화 가능
   - 일반적으로 IP로 통신하므로 딱히 중요한 옵션은 아님
