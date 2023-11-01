@@ -13,7 +13,7 @@ module "ubuntu" {
 
 }
 
-module "nexus" {
+module "repos" {
   source = "./modules/sgroup/allows_repos"
   src_ips              = module.ubuntu.public_ip_list
   src_private_key_path = var.private_key_path
@@ -25,7 +25,7 @@ module "nexus" {
 }
 
 resource "null_resource" "k3s_server"{
-  depends_on = [ module.nexus ]
+  depends_on = [ module.repos ]
   connection {
     type        = "ssh"
     host        = module.ubuntu.public_ip_list[0]
@@ -57,7 +57,7 @@ resource "null_resource" "k3s_server"{
 }
 
 resource "null_resource" "k3s_agents"{
-  depends_on = [ module.nexus, null_resource.k3s_server ]
+  depends_on = [ module.repos, null_resource.k3s_server ]
   count = var.node_count - 1 
   connection {
     type        = "ssh"
