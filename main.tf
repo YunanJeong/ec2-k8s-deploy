@@ -18,9 +18,9 @@ module "repos" {
   src_ips              = module.ubuntu.public_ip_list
   src_private_key_path = var.private_key_path
   src_tags             = var.tags
-  nexus_enabled        = true
+  nexus_enabled        = var.nexus_enabled
   nexus_instance_id    = var.nexus_instance_id
-  gitlab_enabled       = true
+  gitlab_enabled       = var.gitlab_enabled
   gitlab_instance_id   = var.gitlab_instance_id
 }
 

@@ -9,7 +9,9 @@ variable "work_cidr_blocks"{}
 variable "volume_size"{}
 
 # 기타 variables
+variable "nexus_enabled"       { default = "" }
 variable "nexus_instance_id"   { default = "" }
+variable "gitlab_enabled"      { default = "" }
 variable "gitlab_instance_id"  { default = "" }
 
 ## 출력
