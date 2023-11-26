@@ -10,7 +10,7 @@ module "ubuntu" {
   key_name         = var.key_name
   private_key_path = var.private_key_path
   work_cidr_blocks = var.work_cidr_blocks
-
+  subnet_id        = var.subnet_id
 }
 
 module "repos" {

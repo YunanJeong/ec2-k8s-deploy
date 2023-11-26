@@ -24,6 +24,8 @@ variable "work_cidr_blocks"{
   default = ["0.0.0.0/32", ]  # e.g.) my pc's public ip
 }
 
+# 기타
+variable "subnet_id" { default = "" }
 
 output "id_list" {
   description = "ID of the EC2 instance"
