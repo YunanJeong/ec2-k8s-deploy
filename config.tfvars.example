@@ -19,5 +19,5 @@ gitlab_enabled = false
 nexus_instance_id  = "i-xxxxxxxx"
 gitlab_instance_id = "i-xxxxxxxx"
 
-# 인스턴스가 실행될 subnet (default: "", 사용가능한 subnet 중 자동선택)
+# 인스턴스가 실행될 subnet의 id 선택 (default: "", 사용가능한 subnet 중 자동선택)
 subnet_id = ""
