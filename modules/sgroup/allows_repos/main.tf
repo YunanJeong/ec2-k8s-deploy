@@ -5,11 +5,11 @@
 
 # 저장소 인스턴스 정보 가져오기
 data "aws_instance" "nexus" {
-  count       = var.nexus_enabled ? 1 : 0
+  count       = var.nexus_instance_id == "" ? 0 : 1
   instance_id = var.nexus_instance_id
 }
 locals {
-  nexus_ip = var.nexus_enabled ? data.aws_instance.nexus[0].public_ip : "N/A"
+  nexus_ip = var.nexus_instance_id == "" ? "N/A" : data.aws_instance.nexus[0].public_ip
 }
 
 resource "null_resource" "preset"{
@@ -51,7 +51,7 @@ resource "aws_security_group" "nexus_allows"{
 }
 # 저장소에 보안그룹 추가하기
 resource "aws_network_interface_sg_attachment" "nexus_attach" {
-    count                = var.nexus_enabled ? 1 : 0
+    count                = var.nexus_instance_id == "" ? 0 : 1
     security_group_id    = aws_security_group.nexus_allows.id
     network_interface_id = data.aws_instance.nexus[count.index].network_interface_id
 }
@@ -62,7 +62,7 @@ resource "aws_network_interface_sg_attachment" "nexus_attach" {
 ######################################################################
 # 저장소 인스턴스 정보 가져오기
 data "aws_instance" "gitlab" {
-  count       = var.gitlab_enabled ? 1 : 0
+  count       = var.gitlab_instance_id == "" ? 0 : 1
   instance_id = var.gitlab_instance_id
 }
 
@@ -81,7 +81,7 @@ resource "aws_security_group" "gitlab_allows"{
 }
 # 저장소에 보안그룹 추가하기
 resource "aws_network_interface_sg_attachment" "gitlab_attach" {
-    count                = var.gitlab_enabled ? 1 : 0
+    count                = var.gitlab_instance_id == "" ? 0 : 1
     security_group_id    = aws_security_group.gitlab_allows.id
     network_interface_id = data.aws_instance.gitlab[count.index].network_interface_id
 }
