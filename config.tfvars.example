@@ -16,6 +16,8 @@ work_cidr_blocks = ["0.0.0.0/32", ]
 # EC2에서 실행중인 사설저장소 사용시 등록 # default: "" (저장소 미사용)
 nexus_instance_id  = "i-xxxxxxxx"
 gitlab_instance_id = "i-xxxxxxxx"
+nexus_url          = "docker.wai"
+gitlab_url         = "my.gitlab.com"
 
 # 인스턴스가 실행될 subnet의 id 선택      # default: "" (사용가능한 subnet 중 자동선택)
 subnet_id = ""

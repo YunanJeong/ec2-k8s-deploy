@@ -9,6 +9,8 @@ variable "work_cidr_blocks"{}
 variable "volume_size"{}
 variable "nexus_instance_id"   { default = "" }
 variable "gitlab_instance_id"  { default = "" }
+variable "nexus_url"           { default = "" }
+variable "gitlab_url"          { default = "" }
 variable "subnet_id"           { default = "" }
 
 ## 출력

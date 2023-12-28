@@ -15,11 +15,13 @@ module "ubuntu" {
 
 module "repos" {
   source = "./modules/sgroup/allows_repos"
-  src_ips              = module.ubuntu.public_ip_list
-  src_private_key_path = var.private_key_path
-  src_tags             = var.tags
-  nexus_instance_id    = var.nexus_instance_id
-  gitlab_instance_id   = var.gitlab_instance_id
+  src_instance_ids      = module.ubuntu.id_list
+  src_private_key_path  = var.private_key_path
+  src_tags              = var.tags
+  nexus_instance_id     = var.nexus_instance_id
+  gitlab_instance_id    = var.gitlab_instance_id
+  nexus_url             = var.nexus_url
+  gitlab_url            = var.gitlab_url
 }
 
 resource "null_resource" "k3s_server"{
