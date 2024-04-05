@@ -8,6 +8,7 @@ curl -sfL https://get.k3s.io | sh -s - --docker
 mkdir -p ~/.kube
 sudo cat /etc/rancher/k3s/k3s.yaml > ~/.kube/config
 sudo chmod 600 ~/.kube/config
+# sudo chown myuser:myuser ~/.kube/config
 echo 'export KUBECONFIG=~/.kube/config' >> ~/.bashrc
 echo 'alias k="kubectl"' >> ~/.bashrc
 source ~/.bashrc
