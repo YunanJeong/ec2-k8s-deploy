@@ -22,6 +22,10 @@ resource "aws_security_group" "allows_basic"{
 ######################################################################
 # Server Instance
 ######################################################################
+locals {
+  # subnet_id_list 미할당시 자동선택 ("")  
+  valid_subnet_id_list = length(var.subnet_id_list) > 0 ? var.subnet_id_list : [for i in range(var.node_count) : ""]
+}
 resource "aws_instance" "server" {
   count = var.node_count
   ami             = var.ami
@@ -33,7 +37,7 @@ resource "aws_instance" "server" {
                     )
 
   key_name        = var.key_name
-  subnet_id       = var.subnet_id
+  subnet_id       = local.valid_subnet_id_list[count.index]
   vpc_security_group_ids = [        # subnet 지정시 보안그룹은 name이 아닌 id로 등록
     aws_security_group.allows_basic.id,
   ]

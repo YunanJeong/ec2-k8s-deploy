@@ -11,7 +11,7 @@ variable "nexus_instance_id"   { default = "" }
 variable "gitlab_instance_id"  { default = "" }
 variable "nexus_url"           { default = "" }
 variable "gitlab_url"          { default = "" }
-variable "subnet_id"           { default = "" }
+variable "subnet_id_list"      { default = [] }
 
 ## 출력
 output "id" {
@@ -25,6 +25,10 @@ output "public_ip" {
 output "private_ip"{
   description = "Private IP address of the EC2 instance"
   value       = module.ubuntu.private_ip_list
+}
+output "subnet_id" {
+  description = "AWS Subnet ID"
+  value       = module.ubuntu.subnet_id_list
 }
 output "tags" {
   description = "Instance Tags"

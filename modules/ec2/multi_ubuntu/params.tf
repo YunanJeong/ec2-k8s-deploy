@@ -1,10 +1,11 @@
 ######################################################################
 # Set Up Basic
 ######################################################################
-variable "node_count"   {default = 1}
-variable "ami"          {default = "ami-063454de5fe8eba79"} # "Canonical, Ubuntu, 22.04 LTS, amd64 jammy image build on 2022-04-20"
-variable "instance_type"{default = "t2.micro"}
-variable "volume_size"  {default = 8} # GiB
+variable "node_count"     {default = 1}
+variable "subnet_id_list" {default = []}
+variable "ami"            {default = "ami-063454de5fe8eba79"} # "Canonical, Ubuntu, 22.04 LTS, amd64 jammy image build on 2022-04-20"
+variable "instance_type"  {default = "t2.micro"}
+variable "volume_size"    {default = 8} # GiB
 variable "tags"{
   type = map(string)
   default = ({
@@ -24,14 +25,16 @@ variable "work_cidr_blocks"{
   default = ["0.0.0.0/32", ]  # e.g.) my pc's public ip
 }
 
-# 기타
-variable "subnet_id" { default = "" }
 
 output "id_list" {
   description = "ID of the EC2 instance"
   # count로 인해 aws_instance.server가 여러개 있으므로, index를 지정해줘야 값을 호출가능
   # index 자리에 *(asterisk)를 쓰면 value에 전체 list 할당
   value       = aws_instance.server[*].id
+}
+output "subnet_id_list" {
+  description = "AWS Subnet ID"
+  value       = aws_instance.server[*].subnet_id
 }
 output "public_ip_list" {
   description = "Public IP address of the EC2 instance"
