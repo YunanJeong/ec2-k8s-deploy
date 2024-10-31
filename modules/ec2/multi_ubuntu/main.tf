@@ -61,6 +61,29 @@ resource "aws_instance" "server" {
 
 }
 
+######################################################################
+# Server Commands (초기 구성)
+######################################################################
+resource "null_resource" "server_remote" {
+  # remote-exec를 위한 ssh connection 셋업
+  count = var.node_count
+  connection {
+    type        = "ssh"
+    host        = aws_instance.server[count.index].public_ip
+    user        = "ubuntu"
+    private_key = file(var.private_key_path)
+    agent       = false
+  }
+
+  # 실행된 원격 인스턴스에서 수행할 cli명령어
+  provisioner "remote-exec" {
+    inline = [
+      "cloud-init status --wait", # cloud-init이 끝날 떄 까지 기다린다. 에러 예방 차원에서 항상 써준다.
+      "mkdir terraform-done",
+    ]
+  }
+}
+
 # ######################################################################
 # # Public IP로 상호통신 허용 (기존 보안그룹 활용)
 # ######################################################################
@@ -107,27 +130,3 @@ resource "aws_instance" "server" {
 #   security_group_id    = aws_security_group.allows_mutual.id
 #   network_interface_id = data.aws_instance.created_node[count.index].network_interface_id
 # }
-
-######################################################################
-# Server Commands (초기 구성)
-######################################################################
-resource "null_resource" "server_remote" {
-  # remote-exec를 위한 ssh connection 셋업
-  count = var.node_count
-  connection {
-    type        = "ssh"
-    host        = aws_instance.server[count.index].public_ip
-    user        = "ubuntu"
-    private_key = file(var.private_key_path)
-    agent       = false
-  }
-
-  # 실행된 원격 인스턴스에서 수행할 cli명령어
-  provisioner "remote-exec" {
-    inline = [
-      "cloud-init status --wait", # cloud-init이 끝날 떄 까지 기다린다. 에러 예방 차원에서 항상 써준다.
-      "mkdir terraform-done",
-    ]
-  }
-}
-
