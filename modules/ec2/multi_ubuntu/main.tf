@@ -15,7 +15,7 @@ resource "aws_security_group" "allows_basic" {
   ingress {
     description = "between ${var.tags.Name}(private ip)"
     protocol    = "-1"
-    self        = true  # 보안그룹 셀프 참조. 보안그룹이 등록된 인스턴스끼리 private ip 통신 허용
+    self        = true # 보안그룹 셀프 참조. 보안그룹이 등록된 인스턴스끼리 private ip 통신 허용
     from_port   = 0
     to_port     = 0
   }
@@ -95,7 +95,7 @@ resource "null_resource" "server_remote" {
 #   to_port                  = 0
 #   protocol                 = "-1"
 #   security_group_id        = aws_security_group.allows_basic.id
-  
+
 #   # source_security_group_id = aws_security_group.allows_basic.id
 #   cidr_blocks = concat(
 #     [for ip in aws_instance.server[*].public_ip : replace(ip, ip, "${ip}/32")]

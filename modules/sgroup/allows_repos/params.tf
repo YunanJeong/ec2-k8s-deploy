@@ -1,7 +1,8 @@
-variable "src_instance_ids"    {}
-variable "src_private_key_path"{}
-variable "src_tags"            {}
-variable "nexus_instance_id"   { default = "" }  # default: 저장소 미사용
-variable "gitlab_instance_id"  { default = "" }  # default: 저장소 미사용
-variable "nexus_url"           { default = "" }
-variable "gitlab_url"          { default = "" }
+variable "src_instance_ids" {}
+variable "src_private_key_path" {}
+variable "src_tags" {}
+variable "src_basic_sgroup_id" {}
+
+variable "nexus_instance_id" { default = "" }
+variable "nexus_sgroup_id" { default = "" }  # default: 저장소 미사용
+variable "gitlab_sgroup_id" { default = "" } # default: 저장소 미사용

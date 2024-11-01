@@ -1,21 +1,72 @@
 ######################################################################
+# 기존 저장소 보안그룹에 "보안규칙" 등록하기
+
+# 참고) 신규 보안그룹을 생성 후 저장소 인스턴스에 추가하는 방식은 불가
+# => 인스턴스 당 등록가능한 보안그룹 개수가 매우 적기 때문에 금방 한계에 도달한다.
+######################################################################
+
+
+
+######################################################################
 # 저장소에 접근할 소스 인스턴스 정보
 ######################################################################
 # 인스턴스 id 목록으로 인스턴스의 정보 가져오기
 data "aws_instance" "srcs" {
-  count = length(var.src_instance_ids)
+  count       = length(var.src_instance_ids)
   instance_id = var.src_instance_ids[count.index]
 }
 locals {
-  src_public_ips = [for src in data.aws_instance.srcs: src.public_ip]
-  src_private_ips = [for src in data.aws_instance.srcs: src.private_ip]
+  src_public_ips = [for src in data.aws_instance.srcs : src.public_ip]
+  # src_private_ips = [for src in data.aws_instance.srcs : src.private_ip]
 }
 
 ######################################################################
-# EC2로 띄워놓은 사설 저장소(NEXUS)에 보안그룹 추가하기
+# 저장소 보안그룹에 신규 규칙 추가
 ######################################################################
 
-# 저장소 인스턴스 정보 가져오기
+# 도커저장소는 http기반으로 사용 중이므로, 보안을 위해 VPC 내 Private IP 통신만 허용
+# IP 대신 보안그룹 허용방식으로 간결하게 보안규칙 생성
+resource "aws_security_group_rule" "rule_nexus_docker" {
+  description              = "allows_${var.src_tags.Name}(docker)(private)"
+  count                    = var.nexus_sgroup_id == "" ? 0 : 1
+  type                     = "ingress"
+  from_port                = 80
+  to_port                  = 80
+  protocol                 = "tcp"
+  security_group_id        = var.nexus_sgroup_id
+  source_security_group_id = var.src_basic_sgroup_id
+}
+
+# 파일저장소는 Public으로 허용. 컨테이너 내부에서 접근시 공인망 통신해야 편함
+resource "aws_security_group_rule" "rule_nexus_file" {
+  description       = "allows_${var.src_tags.Name}(file)(public)"
+  count             = var.nexus_sgroup_id == "" ? 0 : 1
+  type              = "ingress"
+  from_port         = 8081
+  to_port           = 8081
+  protocol          = "tcp"
+  security_group_id = var.nexus_sgroup_id
+  cidr_blocks       = [for ip in local.src_public_ips[*] : replace(ip, ip, "${ip}/32")]
+}
+
+# gitlab 접근 허용 규칙
+resource "aws_security_group_rule" "rule_gitlab" {
+  description = "allows_${var.src_tags.Name}"
+  count       = var.gitlab_sgroup_id == "" ? 0 : 1
+  type        = "ingress"
+  from_port   = 443
+  to_port     = 443
+  protocol    = "tcp"
+
+  security_group_id = var.gitlab_sgroup_id
+  cidr_blocks       = [for ip in local.src_public_ips[*] : replace(ip, ip, "${ip}/32")]
+}
+
+
+######################################################################
+# /etc/hosts 파일설정
+######################################################################
+# Nexus IP 가져오기
 data "aws_instance" "nexus" {
   count       = var.nexus_instance_id == "" ? 0 : 1
   instance_id = var.nexus_instance_id
@@ -24,64 +75,8 @@ locals {
   nexus_ip = var.nexus_instance_id == "" ? "N/A" : data.aws_instance.nexus[0].private_ip
 }
 
-# 저장소에 추가할 보안그룹
-resource "aws_security_group" "nexus_allows"{
-  name = "nexus_allows_${var.src_tags.Name}"
-  ingress{
-    from_port   = 80
-    to_port     = 80
-    description = "nexus_allows"
-    protocol    = "tcp"
-
-    # 할당된 인스턴스 ip에 문자열 '/32'를 붙이고 리스트로 반환
-    cidr_blocks = [ for ip in local.src_private_ips[*]: replace(ip,ip,"${ip}/32") ]
-  }
-}
-# 저장소에 보안그룹 추가하기
-resource "aws_network_interface_sg_attachment" "nexus_attach" {
-    count                = var.nexus_instance_id == "" ? 0 : 1
-    security_group_id    = aws_security_group.nexus_allows.id
-    network_interface_id = data.aws_instance.nexus[count.index].network_interface_id
-}
-
-
-######################################################################
-# EC2로 띄워놓은 사설 저장소(Gitlab)에 보안그룹 추가하기
-######################################################################
-# 저장소 인스턴스 정보 가져오기
-data "aws_instance" "gitlab" {
-  count       = var.gitlab_instance_id == "" ? 0 : 1
-  instance_id = var.gitlab_instance_id
-}
-locals {
-  gitlab_ip = var.gitlab_instance_id == "" ? "N/A" : data.aws_instance.gitlab[0].private_ip
-}
-
-# 저장소에 추가할 보안그룹
-resource "aws_security_group" "gitlab_allows"{
-  name = "gitlab_allows_${var.src_tags.Name}"
-  ingress{
-    from_port   = 443
-    to_port     = 443
-    description = "gitlab_allows"
-    protocol    = "tcp"
-
-    # 할당된 인스턴스 ip에 문자열 '/32'를 붙이고 리스트로 반환
-    cidr_blocks = [ for ip in local.src_private_ips[*]: replace(ip,ip,"${ip}/32") ]
-  }
-}
-# 저장소에 보안그룹 추가하기
-resource "aws_network_interface_sg_attachment" "gitlab_attach" {
-    count                = var.gitlab_instance_id == "" ? 0 : 1
-    security_group_id    = aws_security_group.gitlab_allows.id
-    network_interface_id = data.aws_instance.gitlab[count.index].network_interface_id
-}
-
-######################################################################
-# VAT 내 Private IP 통신시 hosts 파일설정 (상호 Public통신 기반일 땐 필요없음)
-######################################################################
-resource "null_resource" "preset"{
-  count = length(local.src_public_ips)
+resource "null_resource" "preset" {
+  count = var.nexus_sgroup_id != "" ? length(local.src_public_ips) : 0
   connection {
     type        = "ssh"
     host        = local.src_public_ips[count.index]
@@ -89,8 +84,8 @@ resource "null_resource" "preset"{
     private_key = file(var.src_private_key_path)
     agent       = false
   }
-  provisioner "file"{
-    source = "${path.module}/daemon.json"
+  provisioner "file" {
+    source      = "${path.module}/daemon.json"
     destination = "/home/ubuntu/daemon.json"
   }
   provisioner "remote-exec" {
@@ -98,9 +93,8 @@ resource "null_resource" "preset"{
       "cloud-init status --wait",
       "sudo mkdir -p /etc/docker && sudo cp ~/daemon.json /etc/docker/daemon.json",
       "sudo su -c 'echo ${local.nexus_ip} nexus.wai >> /etc/hosts' ",
-      "sudo su -c 'echo ${local.nexus_ip} ${var.nexus_url} >> /etc/hosts' ",
-      "sudo su -c 'echo ${local.nexus_ip} private.${var.nexus_url} >> /etc/hosts' ",
-      "sudo su -c 'echo ${local.gitlab_ip} ${var.gitlab_url} >> /etc/hosts' ",
+      "sudo su -c 'echo ${local.nexus_ip} docker.wai >> /etc/hosts' ",
+      "sudo su -c 'echo ${local.nexus_ip} private.docker.wai >> /etc/hosts' ",
     ]
   }
 }

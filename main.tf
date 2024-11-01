@@ -14,18 +14,18 @@ module "ubuntu" {
 }
 
 module "repos" {
-  source = "./modules/sgroup/allows_repos"
-  src_instance_ids      = module.ubuntu.id_list
-  src_private_key_path  = var.private_key_path
-  src_tags              = var.tags
-  nexus_instance_id     = var.nexus_instance_id
-  gitlab_instance_id    = var.gitlab_instance_id
-  nexus_url             = var.nexus_url
-  gitlab_url            = var.gitlab_url
+  source               = "./modules/sgroup/allows_repos"
+  src_instance_ids     = module.ubuntu.id_list
+  src_basic_sgroup_id  = module.ubuntu.basic_sgroup_id
+  src_private_key_path = var.private_key_path
+  src_tags             = var.tags
+  nexus_instance_id    = var.nexus_instance_id
+  nexus_sgroup_id      = var.nexus_sgroup_id
+  gitlab_sgroup_id     = var.gitlab_sgroup_id
 }
 
-resource "null_resource" "k3s_server"{
-  depends_on = [ module.repos ]
+resource "null_resource" "k3s_server" {
+  depends_on = [module.repos]
   connection {
     type        = "ssh"
     host        = module.ubuntu.public_ip_list[0]
@@ -33,8 +33,8 @@ resource "null_resource" "k3s_server"{
     private_key = file(var.private_key_path)
     agent       = false
   }
-  provisioner "file"{
-    source = "${path.module}/init"
+  provisioner "file" {
+    source      = "${path.module}/init"
     destination = "/home/ubuntu/init"
   }
   # 실행된 원격 인스턴스에서 수행할 cli명령어
@@ -56,18 +56,18 @@ resource "null_resource" "k3s_server"{
   }
 }
 
-resource "null_resource" "k3s_agents"{
-  depends_on = [ module.repos, null_resource.k3s_server ]
-  count = var.node_count - 1 
+resource "null_resource" "k3s_agents" {
+  depends_on = [module.repos, null_resource.k3s_server]
+  count      = var.node_count - 1
   connection {
     type        = "ssh"
-    host        = module.ubuntu.public_ip_list[count.index + 1]  # 0번째 인스턴스(controlplane) 제외
+    host        = module.ubuntu.public_ip_list[count.index + 1] # 0번째 인스턴스(controlplane) 제외
     user        = "ubuntu"
     private_key = file(var.private_key_path)
     agent       = false
   }
-  provisioner "file"{
-    source = "${path.module}/init"
+  provisioner "file" {
+    source      = "${path.module}/init"
     destination = "/home/ubuntu/init"
   }
   # 실행된 원격 인스턴스에서 수행할 cli명령어
