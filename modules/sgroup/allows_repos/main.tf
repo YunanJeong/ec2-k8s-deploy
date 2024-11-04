@@ -51,14 +51,14 @@ resource "aws_security_group_rule" "rule_nexus_file" {
 
 # gitlab 접근 허용 규칙
 resource "aws_security_group_rule" "rule_gitlab" {
-  description = "allows_${var.src_tags.Name}"
-  count       = var.gitlab_sgroup_id == "" ? 0 : 1
-  type        = "ingress"
-  from_port   = 443
-  to_port     = 443
-  protocol    = "tcp"
+  description       = "allows_${var.src_tags.Name}"
+  count             = var.gitlab_sgroup_id == "" ? 0 : 1
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
   security_group_id = var.gitlab_sgroup_id
-  cidr_blocks = ["${local.src_public_ips[0]}/32"]  # 0번 노드(k3s server)만 허용
+  cidr_blocks       = ["${local.src_public_ips[0]}/32"] # 0번 노드(k3s server)만 허용
   # cidr_blocks       = [for ip in local.src_public_ips[*] : replace(ip, ip, "${ip}/32")]  # 모든 노드 허용
 }
 
