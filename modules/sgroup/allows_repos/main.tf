@@ -51,7 +51,7 @@ resource "aws_security_group_rule" "rule_nexus_file" {
 
 # gitlab 접근 허용 규칙
 resource "aws_security_group_rule" "rule_gitlab" {
-  description       = "allows_${var.src_tags.Name}"
+  description       = "allows_${var.src_tags.Name}-0"
   count             = var.gitlab_sgroup_id == "" ? 0 : 1
   type              = "ingress"
   from_port         = 443
@@ -85,16 +85,17 @@ resource "null_resource" "preset" {
     agent       = false
   }
   provisioner "file" {
-    source      = "${path.module}/daemon.json"
-    destination = "/home/ubuntu/daemon.json"
+    source      = "${path.module}/daemon.json.tpl"
+    destination = "/home/ubuntu/daemon.json.tpl"
   }
   provisioner "remote-exec" {
     inline = [
       "cloud-init status --wait",
+      "sed 's|$${URL_DOCKER}|${var.urls.docker}|g; s|$${URL_PRIVATE_DOCKER}|${var.urls.private_docker}|g; ' ~/daemon.json.tpl > ~/daemon.json",
       "sudo mkdir -p /etc/docker && sudo cp ~/daemon.json /etc/docker/daemon.json",
-      "sudo su -c 'echo ${local.nexus_ip} nexus.wai >> /etc/hosts' ",
-      "sudo su -c 'echo ${local.nexus_ip} docker.wai >> /etc/hosts' ",
-      "sudo su -c 'echo ${local.nexus_ip} private.docker.wai >> /etc/hosts' ",
+      "sudo su -c 'echo ${local.nexus_ip} ${var.urls.nexus} >> /etc/hosts' ",
+      "sudo su -c 'echo ${local.nexus_ip} ${var.urls.docker} >> /etc/hosts' ",
+      "sudo su -c 'echo ${local.nexus_ip} ${var.urls.private_docker} >> /etc/hosts' ",
     ]
   }
 }

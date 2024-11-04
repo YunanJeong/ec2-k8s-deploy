@@ -1,4 +1,0 @@
-{
-    "insecure-registries": ["private.docker.wai", "docker.wai"],
-    "registry-mirrors": ["http://private.docker.wai","http://docker.wai"]
-}
