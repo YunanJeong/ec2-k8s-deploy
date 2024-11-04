@@ -57,9 +57,9 @@ resource "aws_security_group_rule" "rule_gitlab" {
   from_port   = 443
   to_port     = 443
   protocol    = "tcp"
-
   security_group_id = var.gitlab_sgroup_id
-  cidr_blocks       = [for ip in local.src_public_ips[*] : replace(ip, ip, "${ip}/32")]
+  cidr_blocks = ["${local.src_public_ips[0]}/32"]  # 0번 노드(k3s server)만 허용
+  # cidr_blocks       = [for ip in local.src_public_ips[*] : replace(ip, ip, "${ip}/32")]  # 모든 노드 허용
 }
 
 
@@ -76,7 +76,7 @@ locals {
 }
 
 resource "null_resource" "preset" {
-  count = var.nexus_sgroup_id != "" ? length(local.src_public_ips) : 0
+  count = var.nexus_sgroup_id == "" ? 0 : length(local.src_public_ips)
   connection {
     type        = "ssh"
     host        = local.src_public_ips[count.index]
