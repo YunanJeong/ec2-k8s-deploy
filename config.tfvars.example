@@ -11,7 +11,7 @@ subnet_id_list = ["subnet-xxxxx", ""]  # node_count 수 만큼 할당 필요
                                        # 미할당: 모든 인스턴스 subnet 자동 선택
                                        # "": subnet 자동 선택
 
-ami = "ami-063454de5fe8eba79"  # Ubuntu 22.04 LTS
+ami = "ami-040c33c6a51fd5d96"  # Ubuntu 24.04 LTS
 instance_type = "t3.medium"    # 최소권장 2core, 4GB mem (t3.medium)
 volume_size = 8  # GiB
 tags = {
