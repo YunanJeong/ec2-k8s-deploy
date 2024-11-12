@@ -55,6 +55,10 @@ resource "aws_instance" "server" {
   root_block_device {
     volume_size = var.volume_size
     # delete_on_termination = true  # default
+    tags = merge(
+      var.tags,
+      { Name = "${var.tags.Name}-${count.index}" },
+    )
   }
   # ebs_block_device {}             # 추가 볼륨 or 스냅샷 가져올 때 사용
 
