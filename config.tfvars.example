@@ -25,7 +25,7 @@ tags = {
 ##########################################################################
 key_name = "my-keypair"                                # my-EC2-public-key
 private_key_path = "/home/ubuntu/.ssh/my-keypair.pem"  # my-EC2-private-key (pem)
-work_cidr_blocks = ["0.0.0.0/32", ]
+work_cidr_blocks = ["0.0.0.0/32", ]                    # allows inbounds from my-workspace(Don't Use 0.0.0.0)
 
 # EC2 내 사설 저장소 접속 설정 (외부노출 주의)
 nexus_instance_id = "i-xxxxxxxxxxxx"  # IP보다 인스턴스 id가 노출시 더 안전
