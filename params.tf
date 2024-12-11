@@ -12,6 +12,15 @@ variable "nexus_instance_id" { default = "" }
 variable "nexus_sgroup_id" { default = "" }
 variable "gitlab_sgroup_id" { default = "" }
 variable "subnet_id_list" { default = [] }
+variable "urls" {
+  type = map(string)
+  default = ({
+    nexus           = "nexus.wai"
+    docker          = "docker.wai"
+    private_docker  = "private.docker.wai"
+    gitlab          = "mygitlab.com"
+  })
+}
 
 ## 출력
 output "id" {

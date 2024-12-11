@@ -84,18 +84,13 @@ resource "null_resource" "preset" {
     private_key = file(var.src_private_key_path)
     agent       = false
   }
-  provisioner "file" {
-    source      = "${path.module}/daemon.json.tpl"
-    destination = "/home/ubuntu/daemon.json.tpl"
-  }
   provisioner "remote-exec" {
     inline = [
       "cloud-init status --wait",
-      "sed 's|$${URL_DOCKER}|${var.urls.docker}|g; s|$${URL_PRIVATE_DOCKER}|${var.urls.private_docker}|g; ' ~/daemon.json.tpl > ~/daemon.json",
-      "sudo mkdir -p /etc/docker && sudo cp ~/daemon.json /etc/docker/daemon.json",
       "sudo su -c 'echo ${local.nexus_ip} ${var.urls.nexus} >> /etc/hosts' ",
       "sudo su -c 'echo ${local.nexus_ip} ${var.urls.docker} >> /etc/hosts' ",
       "sudo su -c 'echo ${local.nexus_ip} ${var.urls.private_docker} >> /etc/hosts' ",
+      # /etc/docker/daemon.json에서 사설 저장소 허용 등록이 필요한데, 메인모듈의 도커설치과정에서 처리한다.
     ]
   }
 }

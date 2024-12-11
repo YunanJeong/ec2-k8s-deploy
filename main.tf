@@ -42,6 +42,8 @@ resource "null_resource" "k3s_server" {
     inline = [
       "cloud-init status --wait",
       "sudo chmod +x ~/init/*",
+      "export URL_DOCKER=${var.urls.docker}",
+      "export URL_PRIVATE_DOCKER=${var.urls.private_docker}",
       "~/init/docker.sh",
       "~/init/controlplane.sh",
     ]
@@ -75,6 +77,8 @@ resource "null_resource" "k3s_agents" {
     inline = [
       "cloud-init status --wait",
       "sudo chmod +x ~/init/*",
+      "export URL_DOCKER=${var.urls.docker}",
+      "export URL_PRIVATE_DOCKER=${var.urls.private_docker}",
       "~/init/docker.sh",
       "export K3S_URL=https://${module.ubuntu.private_ip_list[0]}:6443",
       "export K3S_TOKEN=$(cat /home/ubuntu/init/server.token)",

@@ -1,4 +1,24 @@
+# 
+# /etc/docker/daemon.json  # Registry and Logging settings  
+# 
+cat <<EOF > /tmp/daemon.json
+{
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "200m",
+    "max-file": "5"
+  },
+  "insecure-registries": ["${URL_PRIVATE_DOCKER}", "${URL_DOCKER}"],
+  "registry-mirrors": ["http://${URL_PRIVATE_DOCKER}","http://${URL_DOCKER}"]
+}
+EOF
+
+sudo mkdir -p /etc/docker
+sudo mv /tmp/daemon.json /etc/docker/daemon.json
+
+#
 # Install
+#
 # https://docs.docker.com/engine/install/ubuntu/
 sudo apt-get update
 sudo apt-get install -y \
