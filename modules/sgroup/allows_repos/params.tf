@@ -11,7 +11,6 @@ variable "urls" {
   default = ({
     nexus           = "nexus.wai"
     docker          = "docker.wai"
-    private_docker  = "private.docker.wai"
     gitlab          = "mygitlab.com"
   })
 }

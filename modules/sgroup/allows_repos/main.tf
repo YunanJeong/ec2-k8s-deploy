@@ -89,7 +89,6 @@ resource "null_resource" "preset" {
       "cloud-init status --wait",
       "sudo su -c 'echo ${local.nexus_ip} ${var.urls.nexus} >> /etc/hosts' ",
       "sudo su -c 'echo ${local.nexus_ip} ${var.urls.docker} >> /etc/hosts' ",
-      "sudo su -c 'echo ${local.nexus_ip} ${var.urls.private_docker} >> /etc/hosts' ",
       # /etc/docker/daemon.json에서 사설 저장소 허용 등록이 필요한데, 메인모듈의 도커설치과정에서 처리한다.
     ]
   }
