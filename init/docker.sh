@@ -1,6 +1,7 @@
 # 
 # /etc/docker/daemon.json  # Registry and Logging settings  
 # 
+URL_DOCKER=${URL_DOCKER:-"docker.wai"}  # If not set, default used
 cat <<EOF > /tmp/daemon.json
 {
   "log-driver": "json-file",
