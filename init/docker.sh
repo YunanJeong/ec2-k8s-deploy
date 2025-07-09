@@ -8,8 +8,8 @@ cat <<EOF > /tmp/daemon.json
 {
   "log-driver": "json-file",
   "log-opts": {
-    "max-size": "200m",
-    "max-file": "5"
+    "max-size": "10m",
+    "max-file": "100"
   },
   "insecure-registries": ["${URL_DOCKER}"],
   "registry-mirrors": ["http://${URL_DOCKER}"]
