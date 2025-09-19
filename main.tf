@@ -51,8 +51,9 @@ resource "null_resource" "k3s_server" {
     command = <<EOT
       chmod 400 ${var.private_key_path}
       ssh -o "StrictHostKeyChecking=no" -i ${var.private_key_path} ubuntu@${module.ubuntu.public_ip_list[0]} 'sudo cat /var/lib/rancher/k3s/server/node-token' > ${path.module}/init/server.token
-      ssh -o "StrictHostKeyChecking=no" -i ${var.private_key_path} ubuntu@${module.ubuntu.public_ip_list[0]} 'sudo cat /etc/rancher/k3s/k3s.yaml' > ${path.module}/init/k3s.yaml
-      sed -i 's/127.0.0.1/${module.ubuntu.private_ip_list[0]}/g' ${path.module}/init/k3s.yaml
+      
+      # ssh -o "StrictHostKeyChecking=no" -i ${var.private_key_path} ubuntu@${module.ubuntu.public_ip_list[0]} 'sudo cat /etc/rancher/k3s/k3s.yaml' > ${path.module}/init/k3s.yaml
+      # sed -i 's/127.0.0.1/${module.ubuntu.private_ip_list[0]}/g' ${path.module}/init/k3s.yaml
     EOT
   }
 }
@@ -81,7 +82,7 @@ resource "null_resource" "k3s_agents" {
       "export K3S_URL=https://${module.ubuntu.private_ip_list[0]}:6443",
       "export K3S_TOKEN=$(cat /home/ubuntu/init/server.token)",
       "~/init/node.sh",
-      "sudo mkdir -p /etc/rancher/k3s && sudo cp ~/init/k3s.yaml /etc/rancher/k3s/k3s.yaml",
+      # "sudo mkdir -p /etc/rancher/k3s && sudo cp ~/init/k3s.yaml /etc/rancher/k3s/k3s.yaml",
     ]
   }
 }
