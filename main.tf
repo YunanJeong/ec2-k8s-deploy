@@ -45,6 +45,7 @@ resource "null_resource" "k3s_server" {
       "export URL_DOCKER=${var.urls.docker}",
       "~/init/docker.sh",
       "~/init/controlplane.sh",
+      "~/init/install_cron_k3s_cert_rotate.sh",
     ]
   }
   provisioner "local-exec" {
@@ -82,6 +83,7 @@ resource "null_resource" "k3s_agents" {
       "export K3S_URL=https://${module.ubuntu.private_ip_list[0]}:6443",
       "export K3S_TOKEN=$(cat /home/ubuntu/init/server.token)",
       "~/init/node.sh",
+      "~/init/install_cron_k3s_cert_rotate.sh",
       # "sudo mkdir -p /etc/rancher/k3s && sudo cp ~/init/k3s.yaml /etc/rancher/k3s/k3s.yaml",
     ]
   }
