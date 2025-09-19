@@ -2,23 +2,18 @@
 curl -sfL https://get.k3s.io | sh -s - --docker
 
 # K3s settings (Context and etc.)
-# # k3s context파일(k3s.yaml)을 표준경로(~/.kube/config)로 옮겨준다.
-# # 표준경로에 기존 context가 있다면, 수동으로 텍스트 편집하여 k3s 추가 
-# # context 파일의 소유자, 소유그룹이 실제 작업 user와 일치하면서 `chmod 600`을 하면 warning, permission denied 없이 사용가능
-mkdir -p ~/.kube
-sudo cat /etc/rancher/k3s/k3s.yaml > ~/.kube/config
-sudo chmod 600 ~/.kube/config
-# sudo chown myuser:myuser ~/.kube/config
-echo 'export KUBECONFIG=~/.kube/config' >> ~/.bashrc
+# # kubeconfig(context 파일)의 소유자, 소유그룹이 실제 작업 user와 일치하면서 `chmod 600`을 하면 warning, permission denied 없이 사용가능
+# mkdir -p ~/.kube  # KUBECONFIG=$HOME/.kube/config
+KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+sudo chmod 600 $KUBECONFIG  
+sudo chown $USER:$USER $KUBECONFIG
+
+echo 'export KUBECONFIG=/etc/rancher/k3s/k3s.yaml' >> ~/.bashrc
 echo 'alias k="kubectl"' >> ~/.bashrc
 source ~/.bashrc
 
 # helm
-curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
-sudo apt-get install apt-transport-https --yes
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
-sudo apt-get update
-sudo apt-get install -y helm
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
 # k9s
 sudo apt install -y jq
