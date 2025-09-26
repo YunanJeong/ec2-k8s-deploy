@@ -2,11 +2,11 @@
 
 # K3s Leaf 인증서(1년)을 자동 갱신하기 위한 크론탭을 "등록해주는" 스크립트
 
-# k3s-server: 매월 1일 03:15에 rotate + restart  # 갱신된 kubeconfig 파일권한 수정(편의상 넣었으나, 별도 관리하는게 원칙상 좋음)
-SERVER_CMD="15 3 1 * * $(command -v k3s) certificate rotate && $(command -v systemctl) restart k3s  &&  $(command -v chmod) 644 /etc/rancher/k3s/k3s.yaml"
+# k3s-server: 매월 UTC 1일 18:15(KST 2일 3:15)에 rotate + restart  # 갱신된 kubeconfig 파일권한 수정(편의상 넣었으나, 별도 관리하는게 원칙상 좋음)
+SERVER_CMD="15 18 1 * * $(command -v k3s) certificate rotate && $(command -v systemctl) restart k3s  &&  $(command -v chmod) 644 /etc/rancher/k3s/k3s.yaml"
 
-# k3s-agent: 매월 1일 03:25에 restart            # k3s-server 갱신 완료 후 k3s-agent 작업이 수행되어야 함
-AGENT_CMD="25 3 1 * * $(command -v systemctl) restart k3s-agent"
+# k3s-agent: 매월 UTC 1일 18:25(KST 2일 3:25)에 restart            # k3s-server 갱신 완료 후 k3s-agent 작업이 수행되어야 함
+AGENT_CMD="25 18 1 * * $(command -v systemctl) restart k3s-agent"
 
 # 여기가 k3s-server 노드인지, k3s-agent 노드인지 판단
 if systemctl is-active --quiet k3s; then
